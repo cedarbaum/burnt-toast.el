@@ -1,7 +1,7 @@
 # burnt-toast.el
 Emacs integration with the [BurntToast](https://github.com/Windos/BurntToast) PowerShell module.
 
-# Installation
+## Installation
 
 ```elisp
 ;; Add project to load-path
@@ -15,6 +15,6 @@ Emacs integration with the [BurntToast](https://github.com/Windos/BurntToast) Po
 (alert "This is an alert" :title "I <3 PowerShell")
 ```
 
-# Attributions
+## Attributions
 
 Default icon is from https://commons.wikimedia.org/wiki/File:EmacsIcon.svg.
