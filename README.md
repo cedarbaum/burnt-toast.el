@@ -8,6 +8,14 @@ This package contains 2 parts:
 
 ## Installation
 
+First, ensure the BurntToast PowerShell module is installed:
+
+```powershell
+Install-Module -Name BurntToast
+```
+
+Then add the project root to your `load-path` and require features as-needed:
+
 ```elisp
 ;; Add project to load-path
 (add-to-list 'load-path "~/path/to/burnt-toast.el/")
