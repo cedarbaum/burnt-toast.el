@@ -17,4 +17,4 @@ Emacs integration with the [BurntToast](https://github.com/Windos/BurntToast) Po
 
 ## Attributions
 
-Default icon is from https://commons.wikimedia.org/wiki/File:EmacsIcon.svg.
+Icon is from Emacs source (commit: fd38c9c0afe2c5bbf04f565eec05daa52a16472b).
