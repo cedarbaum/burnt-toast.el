@@ -22,6 +22,8 @@
   :type 'string
   :group 'burnt-toast)
 
+(defvar burnt-toast--verbose nil)
+
 ;; Based on: https://github.com/mplscorwin/erc-burnt-toast/blob/master/erc-burnt-toast.el
 (defun burnt-toast--clean-powershell-input (string)
   "Return a version of STRING sanitized for use as input to PowerShell.
@@ -37,10 +39,8 @@
         (replace-regexp-in-string
          "[\t\n\r]+" ""
          (replace-regexp-in-string
-          "'" "''"
-          (replace-regexp-in-string
-           "\"" "\"\""
-           string)))))))))
+          "\"" "\"\""
+          string))))))))
 
 (defun burnt-toast--quote-and-sanitize-string (string)
   "Surround STRING with double quotes when it is non-nil."
@@ -57,7 +57,7 @@
   "Execute a PowerShell command COMMAND-AND-ARGS."
   (let* ((ps-base-command (list burnt-toast-powershell-command nil nil nil))
          (all-args (add-to-list 'ps-base-command command-and-args t)))
-    (message command-and-args)
+    (when burnt-toast--verbose (message command-and-args))
     (apply 'call-process all-args)))
 
 (defun burnt-toast--new-ps-object (object args)
@@ -74,7 +74,7 @@
 (cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss)
   "Create new notification with subset of arguments.
 This function should not be called directly."
-  (let* ((processed-text (if (listp text)
+  (let* ((processed-text (if (and text (listp text))
                              (-reduce
                               (lambda (s1 s2) (concat s1 "," s2))
                               (-map 'burnt-toast--quote-and-sanitize-string text))
