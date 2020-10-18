@@ -84,6 +84,8 @@ To use Alert style:
 
 ## Related projects
 
+- [BurntToast](https://github.com/Windos/BurntToast): PowerShell module powering notifications.
+- [Alert](https://github.com/jwiegley/alert): Emacs package for generating alerts.
 - [erc-burnt-toast](https://github.com/mplscorwin/erc-burnt-toast): BurntToast notifications for ERC.
 
 ## Attributions
