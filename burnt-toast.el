@@ -24,8 +24,8 @@
 
 (defvar burnt-toast--verbose nil)
 
-;; Based on: https://github.com/mplscorwin/erc-burnt-toast/blob/master/erc-burnt-toast.el
-(defun burnt-toast--clean-powershell-input (string)
+;; Based on: https://github.com/mplscorwin/erc-burnt-toast-blob/master/erc-burnt-toast.el
+(defun burnt-toast--sanitize-powershell-input (string)
   "Return a version of STRING sanitized for use as input to PowerShell.
 New-lines are removed, trailing spaces are removed, and single-quotes are doubled."
   (when (stringp string)
@@ -39,9 +39,9 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
           string))))))
 
 (defun burnt-toast--quote-and-sanitize-string (string)
-  "Surround STRING with double quotes when it is non-nil."
+  "Surround STRING with double quotes and sanitize it when it is non-nil."
   (when string
-    (concat "\"" (burnt-toast--clean-powershell-input string) "\"")))
+    (concat "\"" (burnt-toast--sanitize-powershell-input string) "\"")))
 
 (defun burnt-toast--nil-string-to-empty (string)
   "Return STRING when a non-nil string or an empty string otherwise."
@@ -86,7 +86,7 @@ This function should not be called directly."
     (burnt-toast--run-powershell-command ps-command)))
 
 ;;;###autoload
-(defun burnt-toast/bt-header-object (id title)
+(defun burnt-toast-bt-header-object (id title)
   "Create a new BTHeader with ID and TITLE."
   (burnt-toast--new-ps-object
    "BTHeader"
@@ -94,7 +94,7 @@ This function should not be called directly."
      ("Title" ,(burnt-toast--quote-and-sanitize-string title)))))
 
 ;;;###autoload
-(cl-defun burnt-toast/new-notification-with-sound (&key text app-logo sound header)
+(cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header)
   "Create new notification with TEXT, APP-LOGO, SOUND, and HEADER."
   (burnt-toast--new-notification-core
    :text text
@@ -103,7 +103,7 @@ This function should not be called directly."
    :header header))
 
 ;;;###autoload
-(cl-defun burnt-toast/new-notification-silent (&key text app-logo header)
+(cl-defun burnt-toast-new-notification-silent (&key text app-logo header)
   "Create new notification with TEXT, APP-LOGO, and HEADER."
   (burnt-toast--new-notification-core
    :text text
@@ -112,7 +112,7 @@ This function should not be called directly."
    :header header))
 
 ;;;###autoload
-(cl-defun burnt-toast/new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound)
+(cl-defun burnt-toast-new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound)
   "Create new snooze-and-dismiss notification with TEXT, APP-LOGO, HEADER, and SOUND."
   (burnt-toast--new-notification-core
    :text text
@@ -122,7 +122,7 @@ This function should not be called directly."
    :header header))
 
 ;;;###autoload
-(cl-defun burnt-toast/new-notification-snooze-and-dismiss-silent (&key text app-logo header)
+(cl-defun burnt-toast-new-notification-snooze-and-dismiss-silent (&key text app-logo header)
   "Create new snooze-and-dismiss notification with TEXT, APP-LOGO, and HEADER."
   (burnt-toast--new-notification-core
    :text text
@@ -132,7 +132,7 @@ This function should not be called directly."
    :header header))
 
 ;;;###autoload
-(cl-defun burnt-toast/new-shoulder-tap (image person &key text app-logo header)
+(cl-defun burnt-toast-new-shoulder-tap (image person &key text app-logo header)
   "Create new shoulder tap with IMAGE, PERSON, TEXT, APP-LOGO, and HEADER."
   (let* ((processed-text (if (and text (listp text))
                              (-reduce
