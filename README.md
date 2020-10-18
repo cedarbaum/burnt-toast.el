@@ -55,6 +55,9 @@ To use Alert style:
  :sound "Alarm10"                                     ;; Optional sound effect
  :header (burnt-toast/bt-header-object "Title" "Id")) ;; Optional header
 
+(burnt-toast/new-notification-with-sound
+ :text '("Line 1" "Line 2"))                          ;; Text can be a list of string for multiline messages
+
 (burnt-toast/new-notification-silent
  :text "Some text"
  :app-logo "path/to/image.png"

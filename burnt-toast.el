@@ -22,7 +22,7 @@
   :type 'string
   :group 'burnt-toast)
 
-;; From: https://github.com/mplscorwin/erc-burnt-toast/blob/master/erc-burnt-toast.el
+;; Based on: https://github.com/mplscorwin/erc-burnt-toast/blob/master/erc-burnt-toast.el
 (defun burnt-toast--clean-powershell-input (string)
   "Return a version of STRING sanitized for use as input to PowerShell.
 <> are replaced with [], new-line is removed, and single-quotes are doubled."
