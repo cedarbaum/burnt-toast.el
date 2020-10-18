@@ -56,7 +56,7 @@ To use Alert style:
  :header (burnt-toast/bt-header-object "Title" "Id")) ;; Optional header
 
 (burnt-toast/new-notification-with-sound
- :text '("Line 1" "Line 2"))                          ;; Text can be a list of string for multiline messages
+ :text '("Line 1" "Line 2"))             ;; Text can be a list of strings for multiline messages
 
 (burnt-toast/new-notification-silent
  :text "Some text"
