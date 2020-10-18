@@ -32,15 +32,11 @@
     (org-no-properties
      (replace-regexp-in-string
       "\s+$" ""
-      (replace-regexp-in-string
-       "<" "["
-       (replace-regexp-in-string
-        ">" "]"
         (replace-regexp-in-string
          "[\t\n\r]+" ""
          (replace-regexp-in-string
           "\"" "\"\""
-          string))))))))
+          string))))))
 
 (defun burnt-toast--quote-and-sanitize-string (string)
   "Surround STRING with double quotes when it is non-nil."
