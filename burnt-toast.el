@@ -85,6 +85,7 @@ This function should not be called directly."
                         ("SnoozeAndDismiss" ,snooze-and-dismiss)))))
     (burnt-toast--run-powershell-command ps-command)))
 
+;;;###autoload
 (defun burnt-toast/bt-header-object (id title)
   "Create a new BTHeader with ID and TITLE."
   (burnt-toast--new-ps-object
@@ -92,6 +93,7 @@ This function should not be called directly."
    `(("Id"    ,id)
      ("Title" ,(burnt-toast--quote-and-sanitize-string title)))))
 
+;;;###autoload
 (cl-defun burnt-toast/new-notification-with-sound (&key text app-logo sound header)
   "Create new notification with TEXT, APP-LOGO, SOUND, and HEADER."
   (burnt-toast--new-notification-core
@@ -100,6 +102,7 @@ This function should not be called directly."
    :sound sound
    :header header))
 
+;;;###autoload
 (cl-defun burnt-toast/new-notification-silent (&key text app-logo header)
   "Create new notification with TEXT, APP-LOGO, and HEADER."
   (burnt-toast--new-notification-core
@@ -108,6 +111,7 @@ This function should not be called directly."
    :silent t
    :header header))
 
+;;;###autoload
 (cl-defun burnt-toast/new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound)
   "Create new snooze-and-dismiss notification with TEXT, APP-LOGO, HEADER, and SOUND."
   (burnt-toast--new-notification-core
@@ -117,6 +121,7 @@ This function should not be called directly."
    :snooze-and-dismiss t
    :header header))
 
+;;;###autoload
 (cl-defun burnt-toast/new-notification-snooze-and-dismiss-silent (&key text app-logo header)
   "Create new snooze-and-dismiss notification with TEXT, APP-LOGO, and HEADER."
   (burnt-toast--new-notification-core
@@ -126,6 +131,7 @@ This function should not be called directly."
    :snooze-and-dismiss t
    :header header))
 
+;;;###autoload
 (cl-defun burnt-toast/new-shoulder-tap (image person &key text app-logo header)
   "Create new shoulder tap with IMAGE, PERSON, TEXT, APP-LOGO, and HEADER."
   (let* ((processed-text (if (and text (listp text))
