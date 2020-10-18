@@ -130,5 +130,21 @@ This function should not be called directly."
    :snooze-and-dismiss t
    :header header))
 
+(cl-defun burnt-toast/new-shoulder-tap (image person &key text app-logo header)
+  "Create new shoulder tap with IMAGE, PERSON, TEXT, APP-LOGO, and HEADER."
+  (let* ((processed-text (if (and text (listp text))
+                             (-reduce
+                              (lambda (s1 s2) (concat s1 "," s2))
+                              (-map 'burnt-toast--quote-and-sanitize-string text))
+                           (burnt-toast--quote-and-sanitize-string text)))
+         (ps-command (burnt-toast--new-ps-object
+                      "BurntToastShoulderTap"
+                      `(("Image"   ,image)
+                        ("Person"  ,person)
+                        ("Text"    ,processed-text)
+                        ("AppLogo" ,app-logo)
+                        ("Header"  ,header)))))
+    (burnt-toast--run-powershell-command ps-command)))
+
 (provide 'burnt-toast)
 ;;; burnt-toast.el ends here

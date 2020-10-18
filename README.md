@@ -46,14 +46,14 @@ To use Alert style:
 ;; notification with others.
 
 ;; Create a BT-Header
-(burnt-toast/bt-header-object "Title" "Id")
+(burnt-toast/bt-header-object "Id" "Title")
 
 ;; Basic notifications
 (burnt-toast/new-notification-with-sound
  :text "Some text"                                    ;; Main text
  :app-logo "path/to/image.png"                        ;; Optional icon
  :sound "Alarm10"                                     ;; Optional sound effect
- :header (burnt-toast/bt-header-object "Title" "Id")) ;; Optional header
+ :header (burnt-toast/bt-header-object "Id" "Title")) ;; Optional header
 
 (burnt-toast/new-notification-with-sound
  :text '("Line 1" "Line 2"))             ;; Text can be a list of strings for multiline messages
@@ -61,19 +61,19 @@ To use Alert style:
 (burnt-toast/new-notification-silent
  :text "Some text"
  :app-logo "path/to/image.png"
- :header (burnt-toast/bt-header-object "Title" "Id"))
+ :header (burnt-toast/bt-header-object "Id" "Title"))
 
 ;; Snooze-and-dismiss notifications
 (burnt-toast/new-notification-snooze-and-dismiss-with-sound
  :text "Some text"
  :app-logo "path/to/image.png"
  :sound "Alarm10"
- :header (burnt-toast/bt-header-object "Title" "Id"))
+ :header (burnt-toast/bt-header-object "Id" "Title"))
 
 (burnt-toast/new-notification-snooze-and-dismiss-silent
  :text "Some text"
  :app-logo "path/to/image.png"
- :header (burnt-toast/bt-header-object "Title" "Id"))
+ :header (burnt-toast/bt-header-object "Id" "Title"))
 ```
 
 ## Related projects
