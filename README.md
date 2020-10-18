@@ -74,6 +74,12 @@ To use Alert style:
  :text "Some text"
  :app-logo "path/to/image.png"
  :header (burnt-toast/bt-header-object "Id" "Title"))
+
+;; Shoulder tap notifications
+(burnt-toast/new-shoulder-tap
+ "path/to/image.png"          ;; Image
+ "person@domain.com"          ;; Person
+ :text "Some text")
 ```
 
 ## Related projects
