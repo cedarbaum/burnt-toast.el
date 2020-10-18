@@ -76,6 +76,11 @@ To use Alert style:
  :header (burnt-toast/bt-header-object "Title" "Id"))
 ```
 
+## Related projects
+
+- [erc-burnt-toast](https://github.com/mplscorwin/erc-burnt-toast): BurntToast notifications for ERC.
+
 ## Attributions
 
-Icon is from Emacs source (commit: fd38c9c0afe2c5bbf04f565eec05daa52a16472b).
+- PowerShell sanitization based on erc-burnt-toast.
+- Icon is from Emacs source (commit: fd38c9c0afe2c5bbf04f565eec05daa52a16472b).
