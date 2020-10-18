@@ -58,14 +58,14 @@
                            (icon (and burnt-toast-icon-path (file-exists-p burnt-toast-icon-path)))
                            (header-id (or (plist-get info :id) default-burnt-toast-header-id)))
                         (if persistent
-                            (burnt-toast/new-notification-snooze-and-dismiss-with-sound
+                            (burnt-toast-new-notification-snooze-and-dismiss-with-sound
                              :app-logo burnt-toast-icon-path
                              :text message
-                             :header (burnt-toast/bt-header-object header-id title))
-                          (burnt-toast/new-notification-with-sound
+                             :header (burnt-toast-bt-header-object header-id title))
+                          (burnt-toast-new-notification-with-sound
                            :app-logo burnt-toast-icon-path
                            :text message
-                           :header (burnt-toast/bt-header-object header-id title))))))
+                           :header (burnt-toast-bt-header-object header-id title))))))
                     ;; ;; Removers are optional.  Their job is to remove
                     ;; ;; the visual or auditory effect of the alert.
                     ;; :remover
