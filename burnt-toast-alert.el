@@ -45,11 +45,11 @@
                            ;; The :title of the alert
                            (title (plist-get info :title))
                            ;; The :category of the alert
-                           (category (plist-get info :category))
+                           ;; (category (plist-get info :category))
                            ;; The major-mode this alert relates to
-                           (mode (plist-get info :mode))
+                           ;; (mode (plist-get info :mode))
                            ;; The buffer the alert relates to
-                           (buffer (plist-get info :buffer))
+                           ;; (buffer (plist-get info :buffer))
                            ;; Severity of the alert.  It is one of:
                            ;;   `urgent'
                            ;;   `high'
@@ -57,7 +57,7 @@
                            ;;   `normal'
                            ;;   `low'
                            ;;   `trivial'
-                           (severity (plist-get info :severity))
+                           ;; (severity (plist-get info :severity))
                            ;; Whether this alert should persist, or fade away
                            (persistent (plist-get info :persistent))
                            ;; Data which was passed to `alert'.  Can be

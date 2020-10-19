@@ -3,7 +3,7 @@
 ;; Copyright (C) 2020 Sam Cedarbaum
 
 ;; Author: Sam Cedarbaum (scedarbaum@gmail.com)
-;; Keywords: alert notifications powershell
+;; Keywords: alert notifications powershell comm
 ;; Homepage: https://github.com/cedarbaum/burnt-toast.el
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "25.1") (dash "2.10"))
@@ -74,11 +74,10 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
 (defun burnt-toast--run-powershell-command (command-and-args &optional skip-install-check)
   "Execute a PowerShell command COMMAND-AND-ARGS.
 Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
-  (let* ((ps-base-command (list burnt-toast-powershell-command nil nil nil))
-         (all-args (add-to-list 'ps-base-command command-and-args t)))
+  (let* ((process-args (list burnt-toast-powershell-command nil nil nil command-and-args)))
     (when burnt-toast--verbose (message command-and-args))
     (or skip-install-check (burnt-toast--check-installation))
-    (apply 'call-process all-args)))
+    (apply 'call-process process-args)))
 
 (defun burnt-toast--new-ps-object (object args)
   "Create a new PowerShell OBJECT using ARGS."
@@ -95,11 +94,12 @@ Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
 
 (cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss)
   "Create new notification with subset of arguments.
+Arguments are TEXT, APP-LOGO, SOUND, HEADER, SILENT,and SNOOZE-AND-DISMISS.
 This function should not be called directly."
   (let* ((processed-text (if (and text (listp text))
                              (-reduce
                               (lambda (s1 s2) (concat s1 "," s2))
-                              (-map 'burnt-toast--quote-and-sanitize-string text))
+                              (-map #'burnt-toast--quote-and-sanitize-string text))
                            (burnt-toast--quote-and-sanitize-string text)))
          (ps-command (burnt-toast--new-ps-object
                       "BurntToastNotification"
@@ -163,7 +163,7 @@ This function should not be called directly."
   (let* ((processed-text (if (and text (listp text))
                              (-reduce
                               (lambda (s1 s2) (concat s1 "," s2))
-                              (-map 'burnt-toast--quote-and-sanitize-string text))
+                              (-map #'burnt-toast--quote-and-sanitize-string text))
                            (burnt-toast--quote-and-sanitize-string text)))
          (ps-command (burnt-toast--new-ps-object
                       "BurntToastShoulderTap"
