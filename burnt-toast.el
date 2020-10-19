@@ -60,12 +60,14 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
   "Create a new PowerShell OBJECT using ARGS."
   (let* ((prefix-string (concat "$(New-" object " "))
          (non-nil-args (-filter (-lambda ((_ value)) value) args))
+         (quoted-args (-map
+                       (-lambda ((arg value quote)) `(,arg ,(if quote (burnt-toast--quote-and-sanitize-string value) value)))
+                       non-nil-args))
          (args-string-list (-map
                             (-lambda ((arg value)) (concat "-" arg " " (burnt-toast--nil-string-to-empty value)))
-                            non-nil-args))
+                            quoted-args))
          (args-string (-reduce (lambda (s1 s2) (concat s1 " " s2)) args-string-list)))
     (concat prefix-string args-string ")")))
-
 
 (cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss)
   "Create new notification with subset of arguments.
@@ -78,8 +80,8 @@ This function should not be called directly."
          (ps-command (burnt-toast--new-ps-object
                       "BurntToastNotification"
                       `(("Text"             ,processed-text)
-                        ("AppLogo"          ,app-logo)
-                        ("Sound"            ,sound)
+                        ("AppLogo"          ,app-logo t)
+                        ("Sound"            ,sound t)
                         ("Header"           ,header)
                         ("Silent"           ,silent)
                         ("SnoozeAndDismiss" ,snooze-and-dismiss)))))
@@ -91,7 +93,7 @@ This function should not be called directly."
   (burnt-toast--new-ps-object
    "BTHeader"
    `(("Id"    ,id)
-     ("Title" ,(burnt-toast--quote-and-sanitize-string title)))))
+     ("Title" ,title t))))
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header)
@@ -141,10 +143,10 @@ This function should not be called directly."
                            (burnt-toast--quote-and-sanitize-string text)))
          (ps-command (burnt-toast--new-ps-object
                       "BurntToastShoulderTap"
-                      `(("Image"   ,image)
-                        ("Person"  ,person)
+                      `(("Image"   ,image t)
+                        ("Person"  ,person t)
                         ("Text"    ,processed-text)
-                        ("AppLogo" ,app-logo)
+                        ("AppLogo" ,app-logo t)
                         ("Header"  ,header)))))
     (burnt-toast--run-powershell-command ps-command)))
 
