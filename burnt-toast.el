@@ -120,7 +120,7 @@ This function should not be called directly."
 ID is an identifier for the notification.  It is used to correlate
 the notification with others.
 
-TITLE is the display name for then notification."
+TITLE is the display name for the notification."
   (burnt-toast--new-ps-object
    "BTHeader"
    `(("Id"    ,id)
