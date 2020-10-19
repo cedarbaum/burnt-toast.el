@@ -28,6 +28,8 @@
 ;;; Code:
 
 (require 'dash)
+(require 'cl-macs)
+(require 'org-macs)
 
 (defcustom burnt-toast-powershell-command "powershell"
   "Command to invoke PowerShell."
