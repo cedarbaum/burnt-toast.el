@@ -62,8 +62,7 @@
                            (persistent (plist-get info :persistent))
                            ;; Data which was passed to `alert'.  Can be
                            ;; anything.
-                           (data (plist-get info :data))
-                           (icon (and burnt-toast-icon-path (file-exists-p burnt-toast-icon-path)))
+                           ;; (data (plist-get info :data))
                            (header-id (or (plist-get info :id) default-burnt-toast-header-id)))
                         (if persistent
                             (burnt-toast-new-notification-snooze-and-dismiss-with-sound
