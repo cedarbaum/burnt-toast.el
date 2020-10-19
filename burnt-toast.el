@@ -22,7 +22,17 @@
   :type 'string
   :group 'burnt-toast)
 
-(defvar burnt-toast--verbose nil)
+(defvar burnt-toast--verbose nil "Enable verbose logging.")
+(defvar burnt-toast--install-checked nil "Cache if installation has already been checked.")
+
+(defun burnt-toast--check-installation ()
+  "Check if PowerShell and BurntToast module are installed and on PATH."
+  (when (not burnt-toast--install-checked)
+    (when (not (executable-find burnt-toast-powershell-command))
+      (error "PowerShell executable not on PATH"))
+    (when (eq 1 (burnt-toast--run-powershell-command "Get-Command New-BurntToastNotification" t))
+      (error "BurntToast module cannot be found"))
+    (setq burnt-toast--install-checked t)))
 
 ;; Based on: https://github.com/mplscorwin/erc-burnt-toast-blob/master/erc-burnt-toast.el
 (defun burnt-toast--sanitize-powershell-input (string)
@@ -49,11 +59,13 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
       string
     ""))
 
-(defun burnt-toast--run-powershell-command (command-and-args)
-  "Execute a PowerShell command COMMAND-AND-ARGS."
+(defun burnt-toast--run-powershell-command (command-and-args &optional skip-install-check)
+  "Execute a PowerShell command COMMAND-AND-ARGS.
+Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
   (let* ((ps-base-command (list burnt-toast-powershell-command nil nil nil))
          (all-args (add-to-list 'ps-base-command command-and-args t)))
     (when burnt-toast--verbose (message command-and-args))
+    (or skip-install-check (burnt-toast--check-installation))
     (apply 'call-process all-args)))
 
 (defun burnt-toast--new-ps-object (object args)
