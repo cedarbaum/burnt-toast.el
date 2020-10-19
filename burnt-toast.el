@@ -132,7 +132,7 @@ This function should not be called directly."
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-silent (&key text app-logo header)
-  "Create new notification with TEXT, APP-LOGO, and HEADER."
+  "Create new silent notification with TEXT, APP-LOGO, and HEADER."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
@@ -151,7 +151,7 @@ This function should not be called directly."
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-snooze-and-dismiss-silent (&key text app-logo header)
-  "Create new snooze-and-dismiss notification with TEXT, APP-LOGO, and HEADER."
+  "Create new silent snooze-and-dismiss notification with TEXT, APP-LOGO, and HEADER."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
