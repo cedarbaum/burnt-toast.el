@@ -115,7 +115,12 @@ This function should not be called directly."
 
 ;;;###autoload
 (defun burnt-toast-bt-header-object (id title)
-  "Create a new BTHeader with ID and TITLE."
+  "Create a new header for a notification.
+
+ID is an identifier for the notification.  It is used to correlate
+the notification with others.
+
+TITLE is the display name for then notification."
   (burnt-toast--new-ps-object
    "BTHeader"
    `(("Id"    ,id)
@@ -123,7 +128,17 @@ This function should not be called directly."
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header)
-  "Create new notification with TEXT, APP-LOGO, SOUND, and HEADER."
+  "Create a new notification.
+
+TEXT is the content of the notification.  This can be a list of strings,
+in which case each entry is a new line.
+
+APP-LOGO is a path to an icon to be displayed with the notification.
+
+SOUND is the sound effect to play.
+
+HEADER is the notification's header.
+This should be created with (burnt-toast-bt-header-object ID HEADER)."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
@@ -132,7 +147,15 @@ This function should not be called directly."
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-silent (&key text app-logo header)
-  "Create new silent notification with TEXT, APP-LOGO, and HEADER."
+  "Create a new silent notification.
+
+TEXT is the content of the notification.  This can be a list of strings,
+in which case each entry is a new line.
+
+APP-LOGO is a path to an icon to be displayed with the notification.
+
+HEADER is the notification's header.
+This should be created with (burnt-toast-bt-header-object ID HEADER)."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
@@ -141,7 +164,17 @@ This function should not be called directly."
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound)
-  "Create new snooze-and-dismiss notification with TEXT, APP-LOGO, HEADER, and SOUND."
+  "Create a new snooze-and-dismiss notification.
+
+TEXT is the content of the notification.  This can be a list of strings,
+in which case each entry is a new line.
+
+APP-LOGO is a path to an icon to be displayed with the notification.
+
+HEADER is the notification's header.
+This should be created with (burnt-toast-bt-header-object ID HEADER).
+
+SOUND is the sound effect to play."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
@@ -151,7 +184,15 @@ This function should not be called directly."
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-snooze-and-dismiss-silent (&key text app-logo header)
-  "Create new silent snooze-and-dismiss notification with TEXT, APP-LOGO, and HEADER."
+  "Create a new silent snooze-and-dismiss notification.
+
+TEXT is the content of the notification.  This can be a list of strings,
+in which case each entry is a new line.
+
+APP-LOGO is a path to an icon to be displayed with the notification.
+
+HEADER is the notification's header.
+This should be created with (burnt-toast-bt-header-object ID HEADER)."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
@@ -161,7 +202,19 @@ This function should not be called directly."
 
 ;;;###autoload
 (cl-defun burnt-toast-new-shoulder-tap (image person &key text app-logo header)
-  "Create new shoulder tap with IMAGE, PERSON, TEXT, APP-LOGO, and HEADER."
+  "Create a new shoulder tap notification.
+
+IMAGE is the image representing the contact.
+
+PERSON is the name of the contact.
+
+TEXT is the content of the fallback notification.  This can be a list of
+strings, in which case each entry is a new line.
+
+APP-LOGO is a path to an icon to be displayed with the fallback notification.
+
+HEADER is the fallback notification's header.
+This should be created with (burnt-toast-bt-header-object ID HEADER)."
   (let* ((processed-text (if (and text (listp text))
                              (-reduce
                               (lambda (s1 s2) (concat s1 "," s2))
