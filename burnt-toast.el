@@ -1,4 +1,4 @@
-;;; burnt-toast.el --- Elisp integration with BurntToast -*- lexical-binding: t; coding: utf-8 -*-
+;;; burnt-toast.el --- Elisp integration with the BurntToast PowerShell module. -*- lexical-binding: t; coding: utf-8 -*-
 
 ;; Copyright (C) 2020 Sam Cedarbaum
 
@@ -28,6 +28,8 @@
 ;;; Code:
 
 (require 'dash)
+(require 'cl-macs)
+(require 'org-macs)
 
 (defcustom burnt-toast-powershell-command "powershell"
   "Command to invoke PowerShell."
