@@ -29,7 +29,6 @@
 
 (require 'dash)
 (require 'cl-lib)
-(require 'org-macs)
 
 (defcustom burnt-toast-powershell-command "powershell"
   "Command to invoke PowerShell."
@@ -53,14 +52,13 @@
   "Return a version of STRING sanitized for use as input to PowerShell.
 New-lines are removed, trailing spaces are removed, and single-quotes are doubled."
   (when (stringp string)
-    (org-no-properties
+    (replace-regexp-in-string
+     "\s+$" ""
      (replace-regexp-in-string
-      "\s+$" ""
-        (replace-regexp-in-string
-         "[\t\n\r]+" ""
-         (replace-regexp-in-string
-          "\"" "\"\""
-          string))))))
+      "[\t\n\r]+" ""
+      (replace-regexp-in-string
+       "\"" "\"\""
+       string)))))
 
 (defun burnt-toast--quote-and-sanitize-string (string)
   "Surround STRING with double quotes and sanitize it when it is non-nil."
