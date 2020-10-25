@@ -1,4 +1,4 @@
-;;; burnt-toast.el --- Elisp integration with the BurntToast PowerShell module. -*- lexical-binding: t; coding: utf-8 -*-
+;;; burnt-toast.el --- Elisp integration with the BurntToast PowerShell module -*- lexical-binding: t; coding: utf-8 -*-
 
 ;; Copyright (C) 2020 Sam Cedarbaum
 
