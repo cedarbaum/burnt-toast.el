@@ -6,7 +6,7 @@
 ;; Keywords: alert notifications powershell comm
 ;; Homepage: https://github.com/cedarbaum/burnt-toast.el
 ;; Version: 0.1
-;; Package-Requires: ((emacs "25.1") (dash "2.10"))
+;; Package-Requires: ((emacs "25.1") (dash "2.10") (alert "1.2"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
