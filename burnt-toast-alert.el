@@ -26,7 +26,7 @@
 (require 'burnt-toast)
 (require 'alert)
 
-(defcustom default-burnt-toast-header-id "burnt-toast-emacs"
+(defcustom burnt-toast-default-header-id "burnt-toast-emacs"
   "Default ID provided to notification headers."
   :type 'string
   :group 'burnt-toast)
@@ -63,7 +63,7 @@
                            ;; Data which was passed to `alert'.  Can be
                            ;; anything.
                            ;; (data (plist-get info :data))
-                           (header-id (or (plist-get info :id) default-burnt-toast-header-id)))
+                           (header-id (or (plist-get info :id) burnt-toast-default-header-id)))
                         (if persistent
                             (burnt-toast-new-notification-snooze-and-dismiss-with-sound
                              :app-logo burnt-toast-icon-path
