@@ -28,7 +28,7 @@
 ;;; Code:
 
 (require 'dash)
-(require 'cl-macs)
+(require 'cl-lib)
 (require 'org-macs)
 
 (defcustom burnt-toast-powershell-command "powershell"
