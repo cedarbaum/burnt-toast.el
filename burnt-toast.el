@@ -74,10 +74,9 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
 (defun burnt-toast--run-powershell-command (command-and-args &optional skip-install-check)
   "Execute a PowerShell command COMMAND-AND-ARGS.
 Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
-  (let* ((process-args (list burnt-toast-powershell-command nil nil nil command-and-args)))
-    (when burnt-toast--verbose (message command-and-args))
-    (or skip-install-check (burnt-toast--check-installation))
-    (apply 'call-process process-args)))
+  (when burnt-toast--verbose (message command-and-args))
+  (or skip-install-check (burnt-toast--check-installation))
+  (call-process burnt-toast-powershell-command nil nil nil command-and-args))
 
 (defun burnt-toast--new-ps-object (object args)
   "Create a new PowerShell OBJECT using ARGS."
