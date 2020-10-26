@@ -88,8 +88,8 @@ Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
          (args-string-list (-map
                             (-lambda ((arg value)) (concat "-" arg " " (burnt-toast--nil-string-to-empty value)))
                             quoted-args))
-         (args-string (-reduce (lambda (s1 s2) (concat s1 " " s2)) args-string-list)))
-    (concat prefix-string args-string ")")))
+         (args-string (and args-string-list (-reduce (lambda (s1 s2) (concat s1 " " s2)) args-string-list))))
+    (concat prefix-string (or args-string "") ")")))
 
 (cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss)
   "Create new notification with subset of arguments.
