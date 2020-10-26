@@ -37,7 +37,7 @@ To use Alert style:
 (setq alert-default-style 'burnt-toast)
 
 ;; Test
-(alert "This is an alert" :title "I <3 PowerShell")
+(alert "This is an alert." :title "I <3 PowerShell")
 ```
 
 ### Library functions

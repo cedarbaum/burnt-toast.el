@@ -26,11 +26,6 @@
 (require 'burnt-toast)
 (require 'alert)
 
-(defcustom burnt-toast-default-header-id "burnt-toast-emacs"
-  "Default ID provided to notification headers."
-  :type 'string
-  :group 'burnt-toast)
-
 (defcustom burnt-toast-icon-path (concat (file-name-directory load-file-name) "icons/emacs.png")
   "Path to icon to use for notifications."
   :type 'string
@@ -58,21 +53,18 @@
                            ;;   `low'
                            ;;   `trivial'
                            ;; (severity (plist-get info :severity))
-                           ;; Whether this alert should persist, or fade away
-                           (persistent (plist-get info :persistent))
                            ;; Data which was passed to `alert'.  Can be
                            ;; anything.
                            ;; (data (plist-get info :data))
-                           (header-id (or (plist-get info :id) burnt-toast-default-header-id)))
+                           ;; Whether this alert should persist, or fade away
+                           (persistent (plist-get info :persistent)))
                         (if persistent
                             (burnt-toast-new-notification-snooze-and-dismiss-with-sound
                              :app-logo burnt-toast-icon-path
-                             :text message
-                             :header (burnt-toast-bt-header-object header-id title))
+                             :text `(,title ,message))
                           (burnt-toast-new-notification-with-sound
                            :app-logo burnt-toast-icon-path
-                           :text message
-                           :header (burnt-toast-bt-header-object header-id title))))))
+                           :text `(,title ,message))))))
                     ;; ;; Removers are optional.  Their job is to remove
                     ;; ;; the visual or auditory effect of the alert.
                     ;; :remover
