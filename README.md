@@ -6,6 +6,8 @@ This package contains 2 parts:
 1. A library that allows creating notifications via BurntToast.
 2. Integration with the [Alert](https://github.com/jwiegley/alert) package.
 
+![](gifs/burnt-toast-notification-example.gif)
+
 ## Installation
 
 First, ensure the BurntToast PowerShell module is installed:
