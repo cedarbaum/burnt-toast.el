@@ -40,10 +40,10 @@
 
 (defun burnt-toast--check-installation ()
   "Check if PowerShell and BurntToast module are installed and on PATH."
-  (when (not burnt-toast--install-checked)
-    (when (not (executable-find burnt-toast-powershell-command))
+  (unless burnt-toast--install-checked
+    (unless (executable-find burnt-toast-powershell-command)
       (error "PowerShell executable not on PATH"))
-    (when (eq 1 (burnt-toast--run-powershell-command "Get-Command New-BurntToastNotification" t))
+    (unless (eq 0 (burnt-toast--run-powershell-command "Get-Command New-BurntToastNotification" t))
       (error "BurntToast module cannot be found"))
     (setq burnt-toast--install-checked t)))
 
