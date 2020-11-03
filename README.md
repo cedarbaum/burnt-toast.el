@@ -28,8 +28,6 @@ Install-Module -Name BurntToast
 
 ### Installing manually
 
-Then add the project root to your `load-path` and require features as-needed:
-
 ```elisp
 ;; Add project to load-path
 (add-to-list 'load-path "~/path/to/burnt-toast.el/")
