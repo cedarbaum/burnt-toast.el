@@ -16,6 +16,18 @@ First, ensure the BurntToast PowerShell module is installed:
 Install-Module -Name BurntToast
 ```
 
+### Installing with MELPA and `use-package`
+
+```elisp
+(use-package burnt-toast                  
+  :if (eq system-type 'windows-nt)        
+  :config                                 
+  (require 'burnt-toast-alert)            
+  (setq alert-default-style 'burnt-toast))
+```
+
+### Installing manually
+
 Then add the project root to your `load-path` and require features as-needed:
 
 ```elisp
