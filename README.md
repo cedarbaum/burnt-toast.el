@@ -1,4 +1,7 @@
 # burnt-toast.el
+
+[![MELPA](https://melpa.org/packages/burnt-toast-badge.svg)](https://melpa.org/#/burnt-toast)
+
 Emacs integration with the [BurntToast](https://github.com/Windos/BurntToast) PowerShell module.
 
 This package contains 2 parts:
