@@ -1,4 +1,7 @@
 # burnt-toast.el
+
+[![MELPA](https://melpa.org/packages/burnt-toast-badge.svg)](https://melpa.org/#/burnt-toast)
+
 Emacs integration with the [BurntToast](https://github.com/Windos/BurntToast) PowerShell module.
 
 This package contains 2 parts:
@@ -16,7 +19,17 @@ First, ensure the BurntToast PowerShell module is installed:
 Install-Module -Name BurntToast
 ```
 
-Then add the project root to your `load-path` and require features as-needed:
+### Installing with MELPA and `use-package`
+
+```elisp
+(use-package burnt-toast                  
+  :if (eq system-type 'windows-nt)        
+  :config                                 
+  (require 'burnt-toast-alert)            
+  (setq alert-default-style 'burnt-toast))
+```
+
+### Installing manually
 
 ```elisp
 ;; Add project to load-path
