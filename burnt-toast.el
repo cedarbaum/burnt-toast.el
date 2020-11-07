@@ -156,13 +156,16 @@ TITLE is the display name for the notification."
      ("Title" ,title t))))
 
 ;;;###autoload
-(cl-defun burnt-toast-bt-text-object (&key content)
+(cl-defun burnt-toast-bt-text-object (&key content max-lines)
   "Create a new text object.
 
-CONTENT is the text content."
+CONTENT is the text content.
+
+MAX-LINES is the maximum number of lines in the text object."
   (burnt-toast--new-ps-object
    "BTText"
-   `(("Content" ,content t))))
+   `(("Content"  ,content t)
+     ("MaxLines" ,max-lines))))
 
 ;;;###autoload
 (cl-defun burnt-toast-bt-image-object (&key source app-logo-override)
