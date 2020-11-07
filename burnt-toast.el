@@ -76,7 +76,8 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
 Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
   (when burnt-toast--verbose (message command-and-args))
   (or skip-install-check (burnt-toast--check-installation))
-  (call-process burnt-toast-powershell-command nil nil nil command-and-args))
+  (call-process burnt-toast-powershell-command nil nil nil
+                "-NoProfile" "-NoExit" "-NonInteractive" "-WindowStyle" "Hidden" command-and-args))
 
 (defun burnt-toast--create-ps-command (command-prefix args)
   "Create a new PowerShell command with prefix COMMAND-PREFIX using ARGS."
@@ -134,10 +135,10 @@ Should be created with (burnt-toast-bt-content-object ...).
 
 APP-ID is an the application identifier of Emacs on Windows.
 
-UNIQUE-IDENTIFIER will be assigned to the tag a group of the notification."
+UNIQUE-IDENTIFIER will be assigned to the tag and group of the notification."
   (let* ((ps-command (burnt-toast--create-ps-command
                       "Submit-BTNotification"
-                      `(("Content"           ,content)
+                      `(("Content"          ,content)
                         ("AppId"            ,app-id t)
                         ("UniqueIdentifier" ,unique-identifier t)))))
     (burnt-toast--run-powershell-command ps-command)))
