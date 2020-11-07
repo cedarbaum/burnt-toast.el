@@ -36,6 +36,11 @@
   :type 'boolean
   :group 'burnt-toast)
 
+(defcustom burnt-toast-emacs-app-id nil
+  "The system's AppId for Emacs.  Must be an exact match or notifications will fail."
+  :type 'string
+  :group 'burnt-toast)
+
 (alert-define-style 'burnt-toast :title "Burnt Toast"
                     :notifier
                     (lambda (info)
@@ -62,21 +67,19 @@
                            ;; anything.
                            ;; (data (plist-get info :data))
                            ;; Whether this alert should persist, or fade away
-                           (id (plist-get info :id))
-                           (persistent (plist-get info :persistent)))
-                        (if persistent
-                            (burnt-toast-new-notification-snooze-and-dismiss-with-sound
-                             :app-logo burnt-toast-icon-path
-                             :text `(,title ,message)
-                             :unique-identifier id)
-                          (burnt-toast-new-notification-with-sound
-                           :app-logo burnt-toast-icon-path
-                           :text `(,title ,message)
-                           :unique-identifier id))))
-                    :remover
-                    (lambda (info)
-                      (when-let ((id (plist-get info :id)))
-                        (and burnt-toast-alert-enable-remover (burnt-toast-remove-notification :group id)))))
+                           ;; (persistent (plist-get info :persistent))
+                           (id (plist-get info :id)))
+                        (let* ((title-obj (burnt-toast-bt-text-object :content title))
+                               (message-obj (burnt-toast-bt-text-object :content message))
+                               (image (burnt-toast-bt-image-object :source burnt-toast-icon-path :app-logo-override t))
+                               (binding (burnt-toast-bt-binding-object :children `(,title-obj ,message-obj) :app-logo-override image))
+                               (visual (burnt-toast-bt-visual-object binding))
+                               (content (burnt-toast-bt-content-object visual)))
+                          (burnt-toast-submit-notification content :unique-identifier id :app-id burnt-toast-emacs-app-id))
+                        :remover
+                        (lambda (info)
+                          (when-let ((id (plist-get info :id)))
+                            (and burnt-toast-alert-enable-remover (burnt-toast-remove-notification :group id)))))))
 
 (provide 'burnt-toast-alert)
 ;;; burnt-toast-alert.el ends here
