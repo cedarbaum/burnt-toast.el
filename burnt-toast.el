@@ -65,11 +65,11 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
   (when string
     (concat "\"" (burnt-toast--sanitize-powershell-input string) "\"")))
 
-(defun burnt-toast--nil-string-to-empty (string)
-  "Return STRING when a non-nil string or an empty string otherwise."
-  (if (stringp string)
-      string
-    ""))
+(defun burnt-toast--param-to-string (obj)
+  "Return OBJ as string when a non-nil string or an empty string otherwise."
+  (cond ((stringp obj) obj)
+        ((numberp obj) (number-to-string obj))
+        (t "")))
 
 (defun burnt-toast--run-powershell-command (command-and-args &optional skip-install-check)
   "Execute a PowerShell command COMMAND-AND-ARGS.
@@ -86,7 +86,7 @@ Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
                        (-lambda ((arg value quote)) `(,arg ,(if quote (burnt-toast--quote-and-sanitize-string value) value)))
                        non-nil-args))
          (args-string-list (-map
-                            (-lambda ((arg value)) (concat "-" arg " " (burnt-toast--nil-string-to-empty value)))
+                            (-lambda ((arg value)) (concat "-" arg " " (burnt-toast--param-to-string value)))
                             quoted-args))
          (args-string (and args-string-list (-reduce (lambda (s1 s2) (concat s1 " " s2)) args-string-list))))
     (concat prefix-string (or args-string "") ")")))
