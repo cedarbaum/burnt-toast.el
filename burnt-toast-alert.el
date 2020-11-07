@@ -31,6 +31,11 @@
   :type 'string
   :group 'burnt-toast)
 
+(defcustom burnt-toast-alert-enable-remover nil
+  "Non-nil if alert should remove notifications, nil otherwise."
+  :type 'boolean
+  :group 'burnt-toast)
+
 (alert-define-style 'burnt-toast :title "Burnt Toast"
                     :notifier
                     (lambda (info)
@@ -57,22 +62,21 @@
                            ;; anything.
                            ;; (data (plist-get info :data))
                            ;; Whether this alert should persist, or fade away
+                           (id (plist-get info :id))
                            (persistent (plist-get info :persistent)))
                         (if persistent
                             (burnt-toast-new-notification-snooze-and-dismiss-with-sound
                              :app-logo burnt-toast-icon-path
-                             :text `(,title ,message))
+                             :text `(,title ,message)
+                             :unique-identifier id)
                           (burnt-toast-new-notification-with-sound
                            :app-logo burnt-toast-icon-path
-                           :text `(,title ,message))))))
-                    ;; ;; Removers are optional.  Their job is to remove
-                    ;; ;; the visual or auditory effect of the alert.
-                    ;; :remover
-                    ;; (lambda (info)
-                    ;;   ;; It is the same property list that was passed to
-                    ;;   ;; the notifier function.
-                    ;;
-                    ;;   ))
+                           :text `(,title ,message)
+                           :unique-identifier id))))
+                    :remover
+                    (lambda (info)
+                      (when-let ((id (plist-get info :id)))
+                        (and burnt-toast-alert-enable-remover (burnt-toast-remove-notification :group id)))))
 
 (provide 'burnt-toast-alert)
 ;;; burnt-toast-alert.el ends here

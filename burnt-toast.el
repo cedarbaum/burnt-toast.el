@@ -78,9 +78,9 @@ Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
   (or skip-install-check (burnt-toast--check-installation))
   (call-process burnt-toast-powershell-command nil nil nil command-and-args))
 
-(defun burnt-toast--new-ps-object (object args)
-  "Create a new PowerShell OBJECT using ARGS."
-  (let* ((prefix-string (concat "$(New-" object " "))
+(defun burnt-toast--create-ps-command (command-prefix args)
+  "Create a new PowerShell command with prefix COMMAND-PREFIX using ARGS."
+  (let* ((prefix-string (concat "$(" command-prefix " "))
          (non-nil-args (-filter (-lambda ((_ value)) value) args))
          (quoted-args (-map
                        (-lambda ((arg value quote)) `(,arg ,(if quote (burnt-toast--quote-and-sanitize-string value) value)))
@@ -91,9 +91,16 @@ Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
          (args-string (and args-string-list (-reduce (lambda (s1 s2) (concat s1 " " s2)) args-string-list))))
     (concat prefix-string (or args-string "") ")")))
 
-(cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss)
+(defun burnt-toast--new-ps-object (object args)
+  "Create a new PowerShell OBJECT with ARGS."
+  (let* ((command-prefix (concat "New-" object " ")))
+    (burnt-toast--create-ps-command command-prefix args)))
+
+(cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss
+                                                   unique-identifier)
   "Create new notification with subset of arguments.
-Arguments are TEXT, APP-LOGO, SOUND, HEADER, SILENT,and SNOOZE-AND-DISMISS.
+Arguments are TEXT, APP-LOGO, SOUND, HEADER, SILENT, SNOOZE-AND-DISMISS,
+and UNIQUE-IDENTIFIER.
 This function should not be called directly."
   (let* ((processed-text (if (and text (listp text))
                              (-reduce
@@ -107,7 +114,8 @@ This function should not be called directly."
                         ("Sound"            ,sound t)
                         ("Header"           ,header)
                         ("Silent"           ,silent)
-                        ("SnoozeAndDismiss" ,snooze-and-dismiss)))))
+                        ("SnoozeAndDismiss" ,snooze-and-dismiss)
+                        ("UniqueIdentifier" ,unique-identifier)))))
     (burnt-toast--run-powershell-command ps-command)))
 
 ;;;###autoload
@@ -124,7 +132,7 @@ TITLE is the display name for the notification."
      ("Title" ,title t))))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header)
+(cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header unique-identifier)
   "Create a new notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -135,15 +143,18 @@ APP-LOGO is a path to an icon to be displayed with the notification.
 SOUND is the sound effect to play.
 
 HEADER is the notification's header.
-This should be created with (burnt-toast-bt-header-object ID HEADER)."
+This should be created with (burnt-toast-bt-header-object ID HEADER).
+
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
    :sound sound
-   :header header))
+   :header header
+   :unique-identifier unique-identifier))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-silent (&key text app-logo header)
+(cl-defun burnt-toast-new-notification-silent (&key text app-logo header unique-identifier)
   "Create a new silent notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -152,15 +163,19 @@ in which case each entry is a new line.
 APP-LOGO is a path to an icon to be displayed with the notification.
 
 HEADER is the notification's header.
-This should be created with (burnt-toast-bt-header-object ID HEADER)."
+This should be created with (burnt-toast-bt-header-object ID HEADER).
+
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
    :silent t
-   :header header))
+   :header header
+   :unique-identifier unique-identifier))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound)
+(cl-defun burnt-toast-new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound
+                                                                           unique-identifier)
   "Create a new snooze-and-dismiss notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -171,16 +186,19 @@ APP-LOGO is a path to an icon to be displayed with the notification.
 HEADER is the notification's header.
 This should be created with (burnt-toast-bt-header-object ID HEADER).
 
-SOUND is the sound effect to play."
+SOUND is the sound effect to play.
+
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
    :sound sound
    :snooze-and-dismiss t
-   :header header))
+   :unique-identifier unique-identifier))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-snooze-and-dismiss-silent (&key text app-logo header)
+(cl-defun burnt-toast-new-notification-snooze-and-dismiss-silent (&key text app-logo header
+                                                                       unique-identifier)
   "Create a new silent snooze-and-dismiss notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -189,13 +207,16 @@ in which case each entry is a new line.
 APP-LOGO is a path to an icon to be displayed with the notification.
 
 HEADER is the notification's header.
-This should be created with (burnt-toast-bt-header-object ID HEADER)."
+This should be created with (burnt-toast-bt-header-object ID HEADER).
+
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
    :silent t
    :snooze-and-dismiss t
-   :header header))
+   :header header
+   :unique-identifier unique-identifier))
 
 ;;;###autoload
 (cl-defun burnt-toast-new-shoulder-tap (image person &key text app-logo header)
@@ -224,6 +245,21 @@ This should be created with (burnt-toast-bt-header-object ID HEADER)."
                         ("Text"    ,processed-text)
                         ("AppLogo" ,app-logo t)
                         ("Header"  ,header)))))
+    (burnt-toast--run-powershell-command ps-command)))
+
+(cl-defun burnt-toast-remove-notification (&key app-id tag group)
+  "Remove a notification.
+
+If APP-ID is specified, removes all notifications for that application.
+
+If TAG is specified, removes all notifications with that tag.
+
+If GROUP is specified, removes all notifications in that group."
+  (let* ((ps-command (burnt-toast--create-ps-command
+                      "Remove-BTNotification"
+                      `(("AppId" ,app-id t)
+                        ("Tag"   ,tag t)
+                        ("Group" ,group)))))
     (burnt-toast--run-powershell-command ps-command)))
 
 (provide 'burnt-toast)
