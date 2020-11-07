@@ -93,8 +93,18 @@ Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
 
 (defun burnt-toast--new-ps-object (object args)
   "Create a new PowerShell OBJECT with ARGS."
-  (let* ((command-prefix (concat "New-" object " ")))
+  (let* ((command-prefix (concat "New-" object)))
     (burnt-toast--create-ps-command command-prefix args)))
+
+(defun burnt-toast--new-ps-object-list (objects &optional process)
+  "Create a comma separated list of OBJECTS.
+Optionally process each object with PROCESS function as list is built."
+  (let* ((map-func (or process #'identity)))
+    (if (and objects (listp objects))
+        (-reduce
+         (lambda (s1 s2) (concat s1 "," s2))
+         (-map map-func objects))
+      (map-func objects))))
 
 (cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss
                                                    unique-identifier)
@@ -102,11 +112,7 @@ Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
 Arguments are TEXT, APP-LOGO, SOUND, HEADER, SILENT, SNOOZE-AND-DISMISS,
 and UNIQUE-IDENTIFIER.
 This function should not be called directly."
-  (let* ((processed-text (if (and text (listp text))
-                             (-reduce
-                              (lambda (s1 s2) (concat s1 "," s2))
-                              (-map #'burnt-toast--quote-and-sanitize-string text))
-                           (burnt-toast--quote-and-sanitize-string text)))
+  (let* ((processed-text (burnt-toast--new-ps-object-list text #'burnt-toast--quote-and-sanitize-string))
          (ps-command (burnt-toast--new-ps-object
                       "BurntToastNotification"
                       `(("Text"             ,processed-text)
@@ -119,7 +125,25 @@ This function should not be called directly."
     (burnt-toast--run-powershell-command ps-command)))
 
 ;;;###autoload
-(defun burnt-toast-bt-header-object (id title)
+(cl-defun burnt-toast-submit-notification (content &key app-id
+                                                   unique-identifier)
+  "Submit a new notification.
+
+CONTENT is the notification's content.
+Should be created with (burnt-toast-bt-content-object ...).
+
+APP-ID is an the application identifier of Emacs on Windows.
+
+UNIQUE-IDENTIFIER will be assigned to the tag a group of the notification."
+  (let* ((ps-command (burnt-toast--create-ps-command
+                      "Submit-BTNotification"
+                      `(("Content"           ,content)
+                        ("AppId"            ,app-id t)
+                        ("UniqueIdentifier" ,unique-identifier t)))))
+    (burnt-toast--run-powershell-command ps-command)))
+
+;;;###autoload
+(cl-defun burnt-toast-bt-header-object (&key id title)
   "Create a new header for a notification.
 
 ID is an identifier for the notification.  It is used to correlate
@@ -130,6 +154,57 @@ TITLE is the display name for the notification."
    "BTHeader"
    `(("Id"    ,id)
      ("Title" ,title t))))
+
+;;;###autoload
+(cl-defun burnt-toast-bt-text-object (&key content)
+  "Create a new text object.
+
+CONTENT is the text content."
+  (burnt-toast--new-ps-object
+   "BTText"
+   `(("Content" ,content t))))
+
+;;;###autoload
+(cl-defun burnt-toast-bt-image-object (&key source app-logo-override)
+  "Create a new image object.
+
+SOURCE is where the image is located.
+
+APP-LOGO-OVERRIDE is non-nil if image will be used as application icon, nil otherwise."
+  (burnt-toast--new-ps-object
+   "BTImage"
+   `(("Source"          ,source t)
+     ("AppLogoOverride" ,app-logo-override))))
+
+;;;###autoload
+(cl-defun burnt-toast-bt-binding-object (&key children app-logo-override)
+  "Create a new binding object.
+
+CHILDREN is the elements contained in the binding.
+
+APP-LOGO-OVERRIDE is the image to be used as the app logo."
+  (burnt-toast--new-ps-object
+   "BTBinding"
+   `(("Children"        ,(burnt-toast--new-ps-object-list children))
+     ("AppLogoOverride" ,app-logo-override))))
+
+;;;###autoload
+(cl-defun burnt-toast-bt-visual-object (binding-generic)
+  "Create a new visual object.
+
+BINDING-GENERIC is the binding associated with the visual."
+  (burnt-toast--new-ps-object
+   "BTVisual"
+   `(("BindingGeneric" ,binding-generic))))
+
+;;;###autoload
+(cl-defun burnt-toast-bt-content-object (visual)
+  "Create a new content object.
+
+VISUAL is the visual associated with the content."
+  (burnt-toast--new-ps-object
+   "BTContent"
+   `(("Visual" ,visual))))
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header unique-identifier)
@@ -233,11 +308,7 @@ APP-LOGO is a path to an icon to be displayed with the fallback notification.
 
 HEADER is the fallback notification's header.
 This should be created with (burnt-toast-bt-header-object ID HEADER)."
-  (let* ((processed-text (if (and text (listp text))
-                             (-reduce
-                              (lambda (s1 s2) (concat s1 "," s2))
-                              (-map #'burnt-toast--quote-and-sanitize-string text))
-                           (burnt-toast--quote-and-sanitize-string text)))
+  (let* ((processed-text (burnt-toast--new-ps-object-list text #'burnt-toast--quote-and-sanitize-string))
          (ps-command (burnt-toast--new-ps-object
                       "BurntToastShoulderTap"
                       `(("Image"   ,image t)
