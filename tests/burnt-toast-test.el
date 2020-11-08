@@ -40,5 +40,29 @@
     ;; Extra space is annoying but not a correctness issue. TODO: trim command text.
     (should (equal "$(New-BurntToastNotification )" command-output))))
 
+(ert-deftest simple-notification ()
+  "Sends a 1-line notification."
+  (let ((command-output (run-burnt-toast-command (burnt-toast-new-notification-with-sound :text "Hello, world"))))
+    (should (equal "$(New-BurntToastNotification -Text \"Hello, world\")" command-output))))
+
+(ert-deftest multiline-notification ()
+  "Sends a multi-line notification."
+  (let ((command-output (run-burnt-toast-command (burnt-toast-new-notification-with-sound :text '("Hello" "world")))))
+    (should (equal "$(New-BurntToastNotification -Text \"Hello\",\"world\")" command-output))))
+
+(ert-deftest submit-custom-notification ()
+  "Sends a custom built notification."
+  (let* ((title-obj (burnt-toast-bt-text-object :content "title"))
+         (message-obj (burnt-toast-bt-text-object :content "message"))
+         (image (burnt-toast-bt-image-object :source "path/to/icon" :app-logo-override t))
+         (binding (burnt-toast-bt-binding-object :children `(,title-obj ,message-obj) :app-logo-override image))
+         (visual (burnt-toast-bt-visual-object binding))
+         (audio-source 'default)
+         (audio (burnt-toast-bt-audio-object audio-source))
+         (content (burnt-toast-bt-content-object visual :audio audio))
+         (command-output (run-burnt-toast-command
+                          (burnt-toast-submit-notification content :unique-identifier "id" :app-id "app-id"))))
+    (should (equal "$(Submit-BTNotification -Content $(New-BTContent -Visual $(New-BTVisual -BindingGeneric $(New-BTBinding -Children $(New-BTText -Content \"title\"),$(New-BTText -Content \"message\") -AppLogoOverride $(New-BTImage -Source \"path/to/icon\" -AppLogoOverride ))) -Audio $(New-BTAudio -Source )) -AppId \"app-id\" -UniqueIdentifier \"id\")" command-output))))
+
 (provide 'burnt-toast-test)
 ;;; burnt-toast-test ends here
