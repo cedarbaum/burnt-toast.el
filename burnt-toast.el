@@ -36,6 +36,7 @@
   :group 'burnt-toast)
 
 (defvar burnt-toast--verbose nil "Enable verbose logging.")
+(defvar burnt-toast-powershell-test-hook nil "Hook to intercept powershell command for testing")
 (defvar burnt-toast--install-checked nil "Cache if installation has already been checked.")
 
 (defun burnt-toast--check-installation ()
@@ -75,9 +76,11 @@ New-lines are removed, trailing spaces are removed, and single-quotes are double
   "Execute a PowerShell command COMMAND-AND-ARGS.
 Optionally skip BurntToast installation check with SKIP-INSTALL-CHECK."
   (when burnt-toast--verbose (message command-and-args))
-  (or skip-install-check (burnt-toast--check-installation))
-  (call-process burnt-toast-powershell-command nil nil nil
-                "-NoProfile" "-NoExit" "-NonInteractive" "-WindowStyle" "Hidden" command-and-args))
+  (if burnt-toast-powershell-test-hook
+      (apply burnt-toast-powershell-test-hook `(,command-and-args))
+    (or skip-install-check (burnt-toast--check-installation))
+    (call-process burnt-toast-powershell-command nil nil nil
+                  "-NoProfile" "-NoExit" "-NonInteractive" "-WindowStyle" "Hidden" command-and-args)))
 
 (defun burnt-toast--create-ps-command (command-prefix args)
   "Create a new PowerShell command with prefix COMMAND-PREFIX using ARGS."
