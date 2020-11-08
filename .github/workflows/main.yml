@@ -21,8 +21,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-        
-      # Runs a single command using the runners shell
+
+      - uses: purcell/setup-emacs@master
+        with:
+          version: 26.3
+          
       - name: Emacs Lisp check
         uses: leotaku/elisp-check@v1.0
         with:
