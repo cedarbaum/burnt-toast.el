@@ -105,7 +105,7 @@ Optionally process each object with PROCESS function as list is built."
         (-reduce
          (lambda (s1 s2) (concat s1 "," s2))
          (-map map-func objects))
-      (map-func objects))))
+      (apply map-func `(,objects)))))
 
 (cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss
                                                    unique-identifier)
