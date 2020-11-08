@@ -29,4 +29,4 @@ jobs:
       - name: Emacs Lisp check
         uses: leotaku/elisp-check@v1.0
         with:
-          file: burnt-toast.el
+          file: '*.el'
