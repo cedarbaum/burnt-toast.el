@@ -283,6 +283,7 @@ UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notifi
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
+   :header header
    :sound sound
    :snooze-and-dismiss t
    :unique-identifier unique-identifier))
