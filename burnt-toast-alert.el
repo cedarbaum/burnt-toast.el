@@ -41,6 +41,42 @@
   :type 'string
   :group 'burnt-toast)
 
+(defcustom burnt-toast-audio-source 'default
+  "The audio source to play for non-silent notifications."
+  :type 'symbol
+  ;; TODO: This doesn't actually do anything. Should be a radio-button selection.
+  :options '(default im mail reminder sms alarm alarm2 alarm3 alarm4 alarm5
+              alarm6 alarm7 alarm8 alarm9 alarm10 call call2 call3 call4
+              call5 call6 call7 call8 call9 call10)
+  :group 'burnt-toast)
+
+(defconst burnt-toast--audio-source-map '((default . "ms-winsoundevent:Notification.Default")
+                                          (im . "ms-winsoundevent:Notification.IM")
+                                          (mail . "ms-winsoundevent:Notification.Mail")
+                                          (reminder . "ms-winsoundevent:Notification.Reminder")
+                                          (sms . "ms-winsoundevent:Notification.SMS")
+                                          (alarm . "ms-winsoundevent:Notification.Looping.Alarm")
+                                          (alarm2 . "ms-winsoundevent:Notification.Looping.Alarm2")
+                                          (alarm3 . "ms-winsoundevent:Notification.Looping.Alarm3")
+                                          (alarm4 . "ms-winsoundevent:Notification.Looping.Alarm4")
+                                          (alarm5 . "ms-winsoundevent:Notification.Looping.Alarm5")
+                                          (alarm6 . "ms-winsoundevent:Notification.Looping.Alarm6")
+                                          (alarm7 . "ms-winsoundevent:Notification.Looping.Alarm7")
+                                          (alarm8 . "ms-winsoundevent:Notification.Looping.Alarm8")
+                                          (alarm9 . "ms-winsoundevent:Notification.Looping.Alarm9")
+                                          (alarm10 . "ms-winsoundevent:Notification.Looping.Alarm10")
+                                          (call . "ms-winsoundevent:Notification.Looping.Call")
+                                          (call2 . "ms-winsoundevent:Notification.Looping.Call2")
+                                          (call3 . "ms-winsoundevent:Notification.Looping.Call3")
+                                          (call4 . "ms-winsoundevent:Notification.Looping.Call4")
+                                          (call5 . "ms-winsoundevent:Notification.Looping.Call5")
+                                          (call6 . "ms-winsoundevent:Notification.Looping.Call6")
+                                          (call7 . "ms-winsoundevent:Notification.Looping.Call7")
+                                          (call8 . "ms-winsoundevent:Notification.Looping.Call8")
+                                          (call9 . "ms-winsoundevent:Notification.Looping.Call9")
+                                          (call10 . "ms-winsoundevent:Notification.Looping.Call10"))
+  "Mapping from symbols to full audio source names.")
+
 (alert-define-style 'burnt-toast :title "Burnt Toast"
                     :notifier
                     (lambda (info)
@@ -74,7 +110,9 @@
                                (image (burnt-toast-bt-image-object :source burnt-toast-icon-path :app-logo-override t))
                                (binding (burnt-toast-bt-binding-object :children `(,title-obj ,message-obj) :app-logo-override image))
                                (visual (burnt-toast-bt-visual-object binding))
-                               (content (burnt-toast-bt-content-object visual)))
+                               (audio-source (cdr (assoc burnt-toast-audio-source burnt-toast--audio-source-map)))
+                               (audio (burnt-toast-bt-audio-object audio-source))
+                               (content (burnt-toast-bt-content-object visual :audio audio)))
                           (burnt-toast-submit-notification content :unique-identifier id :app-id burnt-toast-emacs-app-id))
                         :remover
                         (lambda (info)
