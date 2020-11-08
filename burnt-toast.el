@@ -202,13 +202,25 @@ BINDING-GENERIC is the binding associated with the visual."
    `(("BindingGeneric" ,binding-generic))))
 
 ;;;###autoload
-(cl-defun burnt-toast-bt-content-object (visual)
+(cl-defun burnt-toast-bt-content-object (visual &key audio)
   "Create a new content object.
 
-VISUAL is the visual associated with the content."
+VISUAL is the visual associated with the content.
+
+AUDIO is an optional audio object to play."
   (burnt-toast--new-ps-object
    "BTContent"
-   `(("Visual" ,visual))))
+   `(("Visual" ,visual)
+     ("Audio"  ,audio))))
+
+;;;###autoload
+(cl-defun burnt-toast-bt-audio-object (source)
+  "Create a new audio object.
+
+SOURCE is the audio's source."
+  (burnt-toast--new-ps-object
+   "BTAudio"
+   `(("Source" ,source))))
 
 ;;;###autoload
 (cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header unique-identifier)
