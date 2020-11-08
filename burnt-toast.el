@@ -36,7 +36,7 @@
   :group 'burnt-toast)
 
 (defvar burnt-toast--verbose nil "Enable verbose logging.")
-(defvar burnt-toast-powershell-test-hook nil "Hook to intercept powershell command for testing")
+(defvar burnt-toast-powershell-test-hook nil "Hook to intercept powershell command for testing.")
 (defvar burnt-toast--install-checked nil "Cache if installation has already been checked.")
 
 (defun burnt-toast--check-installation ()
