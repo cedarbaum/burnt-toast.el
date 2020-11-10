@@ -63,5 +63,17 @@
                           (burnt-toast-submit-notification content :unique-identifier "id" :app-id "app-id"))))
     (should (equal "$(Submit-BTNotification -Content $(New-BTContent -Visual $(New-BTVisual -BindingGeneric $(New-BTBinding -Children $(New-BTText -Content \"title\"),$(New-BTText -Content \"message\") -AppLogoOverride $(New-BTImage -Source \"path/to/icon\" -AppLogoOverride ))) -Audio $(New-BTAudio -Source ms-winsoundevent:Notification.Default)) -AppId \"app-id\" -UniqueIdentifier \"id\")" command-output))))
 
+(ert-deftest new-notification-with-expiration-time ()
+  "Sends a notification with an expiration time."
+  (let ((command-output (run-burnt-toast-command (burnt-toast-new-notification-with-sound
+                                                  :expiration-time (burnt-toast-datetime-seconds-from-now 10)))))
+    (should (equal "$(New-BurntToastNotification -ExpirationTime $([DateTime]::Now.AddSeconds(10.000000)))" command-output))))
+
+(ert-deftest new-snooze-and-dismiss-notification-with-expiration-time ()
+  "Sends a notification with an expiration time."
+  (let ((command-output (run-burnt-toast-command (burnt-toast-new-notification-snooze-and-dismiss-with-sound
+                                                  :expiration-time (burnt-toast-datetime-seconds-from-now 10)))))
+    (should (equal "$(New-BurntToastNotification -SnoozeAndDismiss  -ExpirationTime $([DateTime]::Now.AddSeconds(10.000000)))" command-output))))
+
 (provide 'burnt-toast-test)
 ;;; burnt-toast-test ends here

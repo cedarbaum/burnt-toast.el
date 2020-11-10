@@ -111,10 +111,10 @@ Optionally process each object with PROCESS function as list is built."
       (apply map-func `(,objects)))))
 
 (cl-defun burnt-toast--new-notification-core (&key text app-logo sound header silent snooze-and-dismiss
-                                                   unique-identifier)
+                                                   unique-identifier expiration-time)
   "Create new notification with subset of arguments.
 Arguments are TEXT, APP-LOGO, SOUND, HEADER, SILENT, SNOOZE-AND-DISMISS,
-and UNIQUE-IDENTIFIER.
+UNIQUE-IDENTIFIER, and EXPIRATION-TIME.
 This function should not be called directly."
   (let* ((processed-text (burnt-toast--new-ps-object-list text #'burnt-toast--quote-and-sanitize-string))
          (ps-command (burnt-toast--new-ps-object
@@ -125,7 +125,8 @@ This function should not be called directly."
                         ("Header"           ,header)
                         ("Silent"           ,silent)
                         ("SnoozeAndDismiss" ,snooze-and-dismiss)
-                        ("UniqueIdentifier" ,unique-identifier)))))
+                        ("UniqueIdentifier" ,unique-identifier)
+                        ("ExpirationTime"   ,expiration-time)))))
     (burnt-toast--run-powershell-command ps-command)))
 
 ;;;###autoload
@@ -226,7 +227,13 @@ SOURCE is the audio's source."
    `(("Source" ,source))))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header unique-identifier)
+(cl-defun burnt-toast-datetime-seconds-from-now (seconds)
+  "Return the DateTime SECONDS from now."
+  (format "$([DateTime]::Now.AddSeconds(%f))" seconds))
+
+;;;###autoload
+(cl-defun burnt-toast-new-notification-with-sound (&key text app-logo sound header unique-identifier
+                                                        expiration-time)
   "Create a new notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -239,16 +246,22 @@ SOUND is the sound effect to play.
 HEADER is the notification's header.
 This should be created with (burnt-toast-bt-header-object ID HEADER).
 
-UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the
+notification.
+
+EXPIRATION-TIME DateTime for notification to expire.
+This should be created with (burnt-toast-datetime-seconds-from-now SECONDS)."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
    :sound sound
    :header header
-   :unique-identifier unique-identifier))
+   :unique-identifier unique-identifier
+   :expiration-time expiration-time))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-silent (&key text app-logo header unique-identifier)
+(cl-defun burnt-toast-new-notification-silent (&key text app-logo header unique-identifier
+                                                    expiration-time)
   "Create a new silent notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -259,17 +272,22 @@ APP-LOGO is a path to an icon to be displayed with the notification.
 HEADER is the notification's header.
 This should be created with (burnt-toast-bt-header-object ID HEADER).
 
-UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the
+notification.
+
+EXPIRATION-TIME DateTime for notification to expire.
+This should be created with (burnt-toast-datetime-seconds-from-now SECONDS)."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
    :silent t
    :header header
-   :unique-identifier unique-identifier))
+   :unique-identifier unique-identifier
+   :expiration-time expiration-time))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound
-                                                                           unique-identifier)
+(cl-defun burnt-toast-new-notification-snooze-and-dismiss-with-sound (&key text app-logo header sound unique-identifier
+                                                                           expiration-time)
   "Create a new snooze-and-dismiss notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -282,18 +300,23 @@ This should be created with (burnt-toast-bt-header-object ID HEADER).
 
 SOUND is the sound effect to play.
 
-UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the
+notification.
+
+EXPIRATION-TIME DateTime for notification to expire.
+This should be created with (burnt-toast-datetime-seconds-from-now SECONDS)."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
    :header header
    :sound sound
    :snooze-and-dismiss t
-   :unique-identifier unique-identifier))
+   :unique-identifier unique-identifier
+   :expiration-time expiration-time))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-notification-snooze-and-dismiss-silent (&key text app-logo header
-                                                                       unique-identifier)
+(cl-defun burnt-toast-new-notification-snooze-and-dismiss-silent (&key text app-logo header unique-identifier
+                                                                       expiration-time)
   "Create a new silent snooze-and-dismiss notification.
 
 TEXT is the content of the notification.  This can be a list of strings,
@@ -304,7 +327,11 @@ APP-LOGO is a path to an icon to be displayed with the notification.
 HEADER is the notification's header.
 This should be created with (burnt-toast-bt-header-object ID HEADER).
 
-UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notification."
+UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit
+the notification.
+
+EXPIRATION-TIME DateTime for notification to expire.
+This should be created with (burnt-toast-datetime-seconds-from-now SECONDS)."
   (burnt-toast--new-notification-core
    :text text
    :app-logo app-logo
@@ -314,7 +341,7 @@ UNIQUE-IDENTIFIER a unique identifier that can be used to remove/edit the notifi
    :unique-identifier unique-identifier))
 
 ;;;###autoload
-(cl-defun burnt-toast-new-shoulder-tap (image person &key text app-logo header)
+(cl-defun burnt-toast-new-shoulder-tap (image person &key text app-logo header expiration-time)
   "Create a new shoulder tap notification.
 
 IMAGE is the image representing the contact.
@@ -327,15 +354,19 @@ strings, in which case each entry is a new line.
 APP-LOGO is a path to an icon to be displayed with the fallback notification.
 
 HEADER is the fallback notification's header.
-This should be created with (burnt-toast-bt-header-object ID HEADER)."
+This should be created with (burnt-toast-bt-header-object ID HEADER).
+
+EXPIRATION-TIME DateTime for notification to expire.
+This should be created with (burnt-toast-datetime-seconds-from-now SECONDS)."
   (let* ((processed-text (burnt-toast--new-ps-object-list text #'burnt-toast--quote-and-sanitize-string))
          (ps-command (burnt-toast--new-ps-object
                       "BurntToastShoulderTap"
-                      `(("Image"   ,image t)
-                        ("Person"  ,person t)
-                        ("Text"    ,processed-text)
-                        ("AppLogo" ,app-logo t)
-                        ("Header"  ,header)))))
+                      `(("Image"          ,image t)
+                        ("Person"         ,person t)
+                        ("Text"           ,processed-text)
+                        ("AppLogo"        ,app-logo t)
+                        ("Header"         ,header)
+                        ("ExpirationTime" ,expiration-time)))))
     (burnt-toast--run-powershell-command ps-command)))
 
 (cl-defun burnt-toast-remove-notification (&key app-id tag group)
