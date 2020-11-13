@@ -26,7 +26,11 @@
 (require 'burnt-toast)
 (require 'alert)
 
-(defcustom burnt-toast-icon-path (concat (file-name-directory load-file-name) "icons/emacs.png")
+(defconst burnt-toast--icon-path-fallback
+  (concat (file-name-directory load-file-name) "icons/emacs.png")
+  "Path to fallback icon if one isn't specified.")
+
+(defcustom burnt-toast-icon-path nil
   "Path to icon to use for notifications."
   :type 'string
   :group 'burnt-toast)
@@ -107,7 +111,8 @@
                            (id (plist-get info :id)))
                         (let* ((title-obj (burnt-toast-bt-text-object :content title))
                                (message-obj (burnt-toast-bt-text-object :content message))
-                               (image (burnt-toast-bt-image-object :source burnt-toast-icon-path :app-logo-override t))
+                               (icon-path (or burnt-toast-icon-path burnt-toast--icon-path-fallback))
+                               (image (burnt-toast-bt-image-object :source icon-path :app-logo-override t))
                                (binding (burnt-toast-bt-binding-object :children `(,title-obj ,message-obj) :app-logo-override image))
                                (visual (burnt-toast-bt-visual-object binding))
                                (audio-source (cdr (assoc burnt-toast-audio-source burnt-toast--audio-source-map)))
