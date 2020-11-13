@@ -45,6 +45,11 @@
   (let ((command-output (run-burnt-toast-command (burnt-toast-new-notification-with-sound :text "Hello, world"))))
     (should (equal "$(New-BurntToastNotification -Text \"Hello, world\")" command-output))))
 
+(ert-deftest simple-notification-list ()
+  "Sends a 1-line notification with text as a single-item list."
+  (let ((command-output (run-burnt-toast-command (burnt-toast-new-notification-with-sound :text '("Hello, world")))))
+    (should (equal "$(New-BurntToastNotification -Text \"Hello, world\")" command-output))))
+
 (ert-deftest multiline-notification ()
   "Sends a multi-line notification."
   (let ((command-output (run-burnt-toast-command (burnt-toast-new-notification-with-sound :text '("Hello" "world")))))
