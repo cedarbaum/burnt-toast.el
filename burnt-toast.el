@@ -338,7 +338,8 @@ This should be created with (burnt-toast-datetime-seconds-from-now SECONDS)."
    :silent t
    :snooze-and-dismiss t
    :header header
-   :unique-identifier unique-identifier))
+   :unique-identifier unique-identifier
+   :expiration-time expiration-time))
 
 ;;;###autoload
 (cl-defun burnt-toast-new-shoulder-tap (image person &key text app-logo header expiration-time)
